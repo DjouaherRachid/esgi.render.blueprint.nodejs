@@ -1,7 +1,7 @@
 services:
-  - name: web
-    region: eur
-    github:
+  - type: web
+    name: blueprintTP
+    runtime: docker
       repo: https://github.com/DjouaherRachid/esgi.render.blueprint.nodejs.git
       branch: main
     env:
