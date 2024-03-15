@@ -1,9 +1,10 @@
 services:
   - type: web
-    name: blueprintTP
+    name: node
     runtime: docker
-      repo: https://github.com/DjouaherRachid/esgi.render.blueprint.nodejs.git
+      region: eur
       branch: main
+      plan: standard # optional (defaults to starter instance type)
     env:
       - key: NODE_ENV
         value: production
@@ -11,7 +12,7 @@ services:
     startCommand: npm start
 
 databases:
-  - name: my-database
+  - name: DB_NAME
     region: eur
     type: postgres
     env:
