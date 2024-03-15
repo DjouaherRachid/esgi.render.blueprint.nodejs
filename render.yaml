@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: 2i2-esgi-Rachid-web
+    runtime: node
+    repo: https://github.com/DjouaherRachid/esgi.render.blueprint.nodejs.git
+    region: frankfurt
+    branch: main
+    plan: free 
+    buildCommand: npm install
+    startCommand: npm run start
+    envVars:
+      key: DB_URL
+      fromDatabase:
+        name: 2i2-esgi-Rachid-db
+        property: connectionString
+
+databases:
+  - name: 2i2-esgi-Rachid-db
+    region: frankfurt
+    type: postgres
+    plan: free 
+
+automaticDeploy:
+  - serviceID: web
+    branch: main
