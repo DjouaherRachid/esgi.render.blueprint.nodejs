@@ -1,46 +1,28 @@
 services:
-  # A Docker web service
-  - type: web
-    name: webdis
-    runtime: docker
-    repo: https://github.com/DjouaherRachid/esgi.render.blueprint.nodejs.git # optional
-    region: europe # optional (defaults to oregon)
-    plan: standard # optional (defaults to starter instance type)
-    branch: main # optional (defaults to master)
-    rootDir: webdis
-    dockerCommand: ./webdis.sh # optional (defaults to Dockerfile command)
-    numInstances: 1 # optional (defaults to 1)
-    healthCheckPath: /
-    registryCredential: # optional (defaults to no credential)
-      fromRegistryCreds:
-        name: my-credentials
-    envVars:
-      - key: REDIS_HOST
-        fromService:
-          type: redis
-          name: lightning
-          property: host # available properties are listed below
-      - key: REDIS_PORT
-        fromService:
-          type: redis
-          name: lightning
-          property: port
-      - fromGroup: conc-settings
+  - name: web
+    region: eur
+    github:
+      repo: https://github.com/DjouaherRachid/esgi.render.blueprint.nodejs.git
+      branch: main
+    env:
+      - key: NODE_ENV
+        value: production
+    buildCommand: npm install && npm run build
+    startCommand: npm start
 
- - name: private database
-    databaseName: private
-    ipAllowList: [] # only allow internal connections
+databases:
+  - name: my-database
+    region: eur
+    type: postgres
+    env:
+      - key: POSTGRES_DB
+        fromDatabase: true
+      - key: POSTGRES_USER
+        fromDatabase: true
+      - key: POSTGRES_PASSWORD
+        fromDatabase: true
 
-envVarGroups:
-  - name: conc-settings
-    envVars:
-      - key: CONCURRENCY
-        value: 2
-      - key: SECRET
-        generateValue: true
-      - key: USER_PROVIDED_SECRET
-        sync: false
-  - name: stripe
-    envVars:
-      - key: STRIPE_API_URL
-        value: https://api.stripe.com/v2
+automaticDeploy:
+  - serviceID: web
+    branch: main
+
