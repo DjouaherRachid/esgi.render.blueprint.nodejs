@@ -1,0 +1,49 @@
+services:
+  # A Docker web service
+  - type: web
+    name: webdis
+    runtime: docker
+    repo: https://github.com/DjouaherRachid/esgi.render.blueprint.nodejs.git # optional
+    region: europe # optional (defaults to oregon)
+    plan: standard # optional (defaults to starter instance type)
+    branch: main # optional (defaults to master)
+    rootDir: webdis
+    dockerCommand: ./webdis.sh # optional (defaults to Dockerfile command)
+    numInstances: 1 # optional (defaults to 1)
+    healthCheckPath: /
+    registryCredential: # optional (defaults to no credential)
+      fromRegistryCreds:
+        name: my-credentials
+    envVars:
+      - key: REDIS_HOST
+        fromService:
+          type: redis
+          name: lightning
+          property: host # available properties are listed below
+      - key: REDIS_PORT
+        fromService:
+          type: redis
+          name: lightning
+          property: port
+      - fromGroup: conc-settings
+
+databases:
+  - name: elephant
+    databaseName: mydb # optional (Render may add a suffix)
+    user: Rachid # optional
+    ipAllowList: defaults
+    readReplicas: defaults
+
+envVarGroups:
+  - name: conc-settings
+    envVars:
+      - key: CONCURRENCY
+        value: 2
+      - key: SECRET
+        generateValue: true
+      - key: USER_PROVIDED_SECRET
+        sync: false
+  - name: stripe
+    envVars:
+      - key: STRIPE_API_URL
+        value: https://api.stripe.com/v2
