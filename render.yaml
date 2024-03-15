@@ -27,12 +27,9 @@ services:
           property: port
       - fromGroup: conc-settings
 
-databases:
-  - name: elephant
-    databaseName: mydb # optional (Render may add a suffix)
-    user: Rachid # optional
-    ipAllowList: defaults
-    readReplicas: defaults
+ - name: private database
+    databaseName: private
+    ipAllowList: [] # only allow internal connections
 
 envVarGroups:
   - name: conc-settings
